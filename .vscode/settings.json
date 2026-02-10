@@ -1,0 +1,32 @@
+{
+    "cSpell.words": [
+        "amirmarmul",
+        "analyse",
+        "barryvdh",
+        "bmewburn",
+        "bradlc",
+        "DEBUGBAR",
+        "dont",
+        "errorlens",
+        "esbenp",
+        "fakerphp",
+        "intelephense",
+        "larastan",
+        "laravel",
+        "livewire",
+        "nesbot",
+        "nunomaduro",
+        "pestphp",
+        "phpactor",
+        "phpredis",
+        "phpstan",
+        "phpunit",
+        "pkgs",
+        "porifa",
+        "usernamehw",
+        "VITE"
+    ],
+    "errorLens.excludePatterns": [
+        "/tests/**/*.{php}"
+    ]
+}

@@ -1,0 +1,14 @@
+/.idx
+/.vscode
+/app
+/bootstrap
+/config
+/database
+/node_modules
+/public
+/resources/fonts
+/routes
+/storage
+/tests
+/vendor
+*.log
