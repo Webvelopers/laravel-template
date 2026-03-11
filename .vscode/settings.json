@@ -24,7 +24,7 @@
         "pkgs",
         "porifa",
         "usernamehw",
-        "VITE"
+        "vite"
     ],
     "errorLens.excludePatterns": [
         "/tests/**/*.{php}"

@@ -68,7 +68,6 @@
             "npm run lint"
         ],
         "fix": [
-            "clear",
             "@refactor",
             "@pint",
             "npm run lint:fix",
@@ -82,7 +81,6 @@
         "test:types": "./vendor/bin/phpstan analyse --memory-limit=256M",
         "test:unit": "./vendor/bin/pest",
         "test": [
-            "clear",
             "@test:refactor",
             "@test:lint",
             "@test:types",
@@ -91,7 +89,7 @@
         "refactor": "./vendor/bin/rector process",
         "pint": "./vendor/bin/pint",
         "phpstan": "./vendor/bin/phpstan analyse --memory-limit=256M",
-        "pest": "./vendor/bin/pest  --parallel"
+        "pest": "./vendor/bin/pest --parallel"
     },
     "extra": {
         "laravel": {

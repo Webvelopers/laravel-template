@@ -24,9 +24,8 @@
       };
     };
     previews = {
-      enable = true;
-      previews = {
-      };
+      enable = false;
+      previews = {};
     };
   };
 }

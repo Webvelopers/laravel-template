@@ -20,6 +20,6 @@
 composer.lock
 Homestead.json
 Homestead.yaml
-npm-debug.log
+npm-debug.log*
 package-lock.json
 yarn-error.log
