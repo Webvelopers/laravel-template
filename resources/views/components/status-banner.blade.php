@@ -15,7 +15,9 @@
 @endphp
 
 @if ($status && array_key_exists($status, $messages))
-    <div class="rounded-2xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-700">
+    <div
+        class="{{ ($frontendTemplate ?? 'default') === 'shadcn' ? 'rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-700' : 'rounded-2xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-700' }}"
+    >
         {{ $messages[$status] }}
     </div>
 @endif

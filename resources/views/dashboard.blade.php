@@ -1,28 +1,43 @@
+@php
+    $isShadcn = ($frontendTemplate ?? 'default') === 'shadcn';
+
+    if ($isShadcn) {
+        $heroClass = 'rounded-[1.75rem] border border-slate-200 bg-white p-8 shadow-[0_20px_60px_-36px_rgba(15,23,42,0.25)]';
+        $eyebrowClass = 'text-xs font-medium tracking-[0.28em] text-slate-500 uppercase';
+        $titleClass = 'mt-3 text-4xl font-semibold tracking-tight text-slate-950';
+        $copyClass = 'mt-4 max-w-2xl text-base leading-8 text-slate-600';
+        $primaryButtonClass = 'rounded-md bg-slate-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800';
+        $secondaryButtonClass = 'rounded-md border border-slate-300 bg-white px-5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50';
+    } else {
+        $heroClass = 'rounded-[2rem] border border-stone-200 bg-white/80 p-8 shadow-[0_24px_80px_-40px_rgba(120,53,15,0.45)]';
+        $eyebrowClass = 'text-sm font-semibold tracking-[0.35em] text-amber-700 uppercase';
+        $titleClass = 'font-display mt-3 text-4xl text-stone-950';
+        $copyClass = 'mt-4 max-w-2xl text-base leading-8 text-stone-600';
+        $primaryButtonClass = 'rounded-full bg-stone-900 px-5 py-3 text-sm font-semibold text-amber-50 transition hover:bg-stone-700';
+        $secondaryButtonClass = 'rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-stone-900';
+    }
+@endphp
+
 <x-layouts.app :title="__('frontend.dashboard.eyebrow')">
     <section class="space-y-8">
-        <div
-            class="rounded-[2rem] border border-stone-200 bg-white/80 p-8 shadow-[0_24px_80px_-40px_rgba(120,53,15,0.45)]"
-        >
-            <p class="text-sm font-semibold tracking-[0.35em] text-amber-700 uppercase">
+        <div class="{{ $heroClass }}">
+            <p class="{{ $eyebrowClass }}">
                 {{ __('frontend.dashboard.eyebrow') }}
             </p>
-            <h1 class="font-display mt-3 text-4xl text-stone-950">
+            <h1 class="{{ $titleClass }}">
                 {{ __('frontend.dashboard.greeting', ['name' => auth()->user()->name]) }}
             </h1>
-            <p class="mt-4 max-w-2xl text-base leading-8 text-stone-600">{{ __('frontend.dashboard.description') }}</p>
+            <p class="{{ $copyClass }}">{{ __('frontend.dashboard.description') }}</p>
 
             <div class="mt-6 flex flex-wrap gap-3">
-                <a
-                    href="{{ route('profile') }}"
-                    class="rounded-full bg-stone-900 px-5 py-3 text-sm font-semibold text-amber-50 transition hover:bg-stone-700"
-                >
+                <a href="{{ route('profile') }}" class="{{ $primaryButtonClass }}">
                     {{ __('frontend.dashboard.manage_profile') }}
                 </a>
                 <a
                     href="https://laravel.com/docs/12.x"
                     target="_blank"
                     rel="noreferrer"
-                    class="rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-stone-900"
+                    class="{{ $secondaryButtonClass }}"
                 >
                     {{ __('frontend.dashboard.docs') }}
                 </a>
