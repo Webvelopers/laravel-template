@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use App\Models\AppSetting;
 use App\Models\User;
+use App\Models\UserFrontendPreference;
+use App\Models\UserRoleAssignment;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
@@ -15,6 +17,7 @@ use function Pest\Laravel\withSession;
 it('updates profile information and resets email verification when email changes', function (): void {
     Notification::fake();
 
+    /** @var User $user */
     $user = User::factory()->create([
         'email_verified_at' => now(),
     ]);
@@ -22,7 +25,7 @@ it('updates profile information and resets email verification when email changes
     actingAs($user);
 
     from(route('profile'))
-        ->put('/user/profile-information', [
+        ->put(route('user-profile-information.update'), [
             'name' => 'Updated User',
             'email' => 'UPDATED@EXAMPLE.COM',
         ])
@@ -41,6 +44,7 @@ it('updates profile information and resets email verification when email changes
 it('updates the user name without clearing verification when email stays the same', function (): void {
     Notification::fake();
 
+    /** @var User $user */
     $user = User::factory()->create([
         'email_verified_at' => now(),
     ]);
@@ -48,7 +52,7 @@ it('updates the user name without clearing verification when email stays the sam
     actingAs($user);
 
     from(route('profile'))
-        ->put('/user/profile-information', [
+        ->put(route('user-profile-information.update'), [
             'name' => 'Only Name Changed',
             'email' => $user->email,
         ])
@@ -64,6 +68,7 @@ it('updates the user name without clearing verification when email stays the sam
 });
 
 it('updates the password when the current password is valid', function (): void {
+    /** @var User $user */
     $user = User::factory()->create([
         'password' => Hash::make('OldPassword123!'),
     ]);
@@ -71,7 +76,7 @@ it('updates the password when the current password is valid', function (): void 
     actingAs($user);
 
     from(route('profile'))
-        ->put('/user/password', [
+        ->put(route('user-password.update'), [
             'current_password' => 'OldPassword123!',
             'password' => 'T3mplate!Fresh#654',
             'password_confirmation' => 'T3mplate!Fresh#654',
@@ -83,6 +88,7 @@ it('updates the password when the current password is valid', function (): void 
 });
 
 it('rejects password updates when the current password is invalid', function (): void {
+    /** @var User $user */
     $user = User::factory()->create([
         'password' => Hash::make('OldPassword123!'),
     ]);
@@ -90,7 +96,7 @@ it('rejects password updates when the current password is invalid', function ():
     actingAs($user);
 
     from(route('profile'))
-        ->put('/user/password', [
+        ->put(route('user-password.update'), [
             'current_password' => 'WrongPassword123!',
             'password' => 'T3mplate!Fresh#654',
             'password_confirmation' => 'T3mplate!Fresh#654',
@@ -102,6 +108,7 @@ it('rejects password updates when the current password is invalid', function ():
 });
 
 it('updates the frontend template preference from the profile area', function (): void {
+    /** @var User $user */
     $user = User::factory()->create([
         'email_verified_at' => now(),
     ]);
@@ -116,7 +123,7 @@ it('updates the frontend template preference from the profile area', function ()
         ->assertSessionHasNoErrors()
         ->assertSessionHas('frontend_template', 'shadcn');
 
-    expect($user->fresh()?->frontend_template)->toBe('shadcn');
+    expect(UserFrontendPreference::templateFor($user->fresh()))->toBe('shadcn');
 
     actingAs($user);
 
@@ -127,9 +134,11 @@ it('updates the frontend template preference from the profile area', function ()
 });
 
 it('updates the global human verification setting from the profile area', function (): void {
+    /** @var User $user */
     $user = User::factory()->create([
         'email_verified_at' => now(),
     ]);
+    UserRoleAssignment::assign($user, App\Enums\UserRole::Admin);
 
     actingAs($user);
 
@@ -140,5 +149,49 @@ it('updates the global human verification setting from the profile area', functi
         ->assertRedirect(route('profile'))
         ->assertSessionHasNoErrors();
 
-    expect(AppSetting::getBool('registration_human_verification_enabled'))->toBeTrue();
+    expect(AppSetting::registrationHumanVerificationEnabled())->toBeTrue();
+});
+
+it('does not allow guests to update the global human verification setting', function (): void {
+    from(route('login'))
+        ->post(route('human-verification.update'), [
+            'registration_human_verification_enabled' => '1',
+        ])
+        ->assertRedirect(route('login'));
+
+    expect(AppSetting::registrationHumanVerificationEnabled())->toBeFalse();
+});
+
+it('does not allow standard users to update the global human verification setting', function (): void {
+    /** @var User $user */
+    $user = User::factory()->create([
+        'email_verified_at' => now(),
+    ]);
+    UserRoleAssignment::assign($user, App\Enums\UserRole::User);
+
+    actingAs($user)
+        ->post(route('human-verification.update'), [
+            'registration_human_verification_enabled' => '1',
+        ])
+        ->assertForbidden();
+
+    expect(AppSetting::registrationHumanVerificationEnabled())->toBeFalse();
+});
+
+it('rejects invalid frontend template selections', function (): void {
+    /** @var User $user */
+    $user = User::factory()->create([
+        'email_verified_at' => now(),
+    ]);
+
+    actingAs($user);
+
+    from(route('profile'))
+        ->post(route('frontend-template.update'), [
+            'frontend_template' => 'invalid-template',
+        ])
+        ->assertRedirect(route('profile'))
+        ->assertSessionHasErrors('frontend_template');
+
+    expect(UserFrontendPreference::templateFor($user->fresh()))->toBeNull();
 });

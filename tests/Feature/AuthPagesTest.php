@@ -40,7 +40,7 @@ it('shows the generic password reset success message for unknown emails', functi
 });
 
 it('shows the built-in human verification on the register page only when enabled', function (): void {
-    AppSetting::setBool('registration_human_verification_enabled', true);
+    AppSetting::setRegistrationHumanVerificationEnabled(true);
 
     get(route('register'))
         ->assertOk()
@@ -48,7 +48,7 @@ it('shows the built-in human verification on the register page only when enabled
         ->assertSee('data:image/svg+xml;base64,')
         ->assertSee('human_verification_answer');
 
-    AppSetting::setBool('registration_human_verification_enabled', false);
+    AppSetting::setRegistrationHumanVerificationEnabled(false);
 
     get(route('register'))
         ->assertOk()
@@ -56,7 +56,7 @@ it('shows the built-in human verification on the register page only when enabled
 });
 
 it('refreshes the human verification image', function (): void {
-    AppSetting::setBool('registration_human_verification_enabled', true);
+    AppSetting::setRegistrationHumanVerificationEnabled(true);
 
     get(route('register'))->assertOk();
 
@@ -75,7 +75,7 @@ it('refreshes the human verification image', function (): void {
 });
 
 it('returns a fresh captcha image over json refresh requests', function (): void {
-    AppSetting::setBool('registration_human_verification_enabled', true);
+    AppSetting::setRegistrationHumanVerificationEnabled(true);
 
     get(route('register'))->assertOk();
 

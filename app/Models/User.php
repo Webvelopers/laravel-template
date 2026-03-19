@@ -27,7 +27,6 @@ final class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-        'frontend_template',
     ];
 
     /**
@@ -52,7 +51,6 @@ final class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'frontend_template' => 'string',
             'two_factor_confirmed_at' => 'datetime',
         ];
     }

@@ -36,7 +36,7 @@
             </a>
         </div>
 
-        <x-templates.options :active-template="$frontendTemplate ?? 'default'" />
+        @include('templates.options', ['activeTemplate' => $frontendTemplate ?? 'default'])
 
         @include('templates.' . $template)
     </section>

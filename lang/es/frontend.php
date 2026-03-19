@@ -10,6 +10,7 @@ return [
         'home' => 'Inicio',
         'templates' => 'Templates',
         'dashboard' => 'Dashboard',
+        'admin' => 'Admin',
         'profile' => 'Perfil',
         'logout' => 'Salir',
         'login' => 'Entrar',
@@ -89,8 +90,14 @@ return [
         'eyebrow' => 'Dashboard',
         'greeting' => 'Hola, :name.',
         'description' => 'Ya tienes un punto de partida funcional: autenticacion, verificacion de correo, perfil, 2FA y un stack de calidad preparado para extender el dominio de tu aplicacion.',
+        'admin_settings' => 'Ajustes de admin',
         'manage_profile' => 'Gestionar perfil',
         'docs' => 'Explorar docs',
+    ],
+    'roles' => [
+        'label' => 'Perfil',
+        'admin' => 'Administracion',
+        'user' => 'Usuario',
     ],
     'profile' => [
         'title' => 'Perfil',
@@ -111,6 +118,9 @@ return [
         'human_verification' => 'Verificacion humana en registro',
         'human_verification_description' => 'Activa un desafio interno de verificacion humana en la pagina de crear cuenta. Cuando este activo, los nuevos registros deben resolver una pequena prueba antes de crear la cuenta.',
         'update_human_verification' => 'Actualizar verificacion',
+        'admin_tools' => 'Herramientas de administracion',
+        'admin_tools_description' => 'Como administrador puedes gestionar opciones globales de registro y plataforma desde el area de administracion.',
+        'open_admin_settings' => 'Abrir ajustes de admin',
         'human_verification_options' => [
             'disabled' => 'Desactivado',
             'enabled' => 'Activado',
@@ -138,6 +148,64 @@ return [
         'templates' => [
             'default' => 'Starter default',
             'shadcn' => 'Inspirado en shadcn',
+        ],
+    ],
+    'admin' => [
+        'title' => 'Administracion',
+        'eyebrow' => 'Administracion',
+        'headline' => 'Ajustes de la plataforma',
+        'description' => 'Gestiona configuraciones globales que afectan el flujo de registro y los valores operativos por defecto de la aplicacion.',
+        'human_verification_title' => 'Salvaguardas de registro',
+        'human_verification_description' => 'Controla si los nuevos usuarios deben resolver el desafio interno de verificacion humana antes de crear su cuenta.',
+        'human_verification_field' => 'Verificacion humana en registro',
+        'save_settings' => 'Guardar ajustes',
+        'roles_title' => 'Catalogo de roles y capacidades habilitadas',
+        'roles_description' => 'Revisa los roles disponibles en la plataforma y las capacidades operativas asociadas a cada uno.',
+        'capabilities_title' => 'Capacidades disponibles',
+        'protected_capability' => 'Capacidad protegida requerida para este rol.',
+        'user_roles_title' => 'Administracion de roles de usuario',
+        'user_roles_description' => 'Asigna el rol que define como puede operar cada cuenta dentro de la plataforma. Esta seccion esta restringida a administradores.',
+        'user_name' => 'Nombre',
+        'user_email' => 'Email',
+        'user_role' => 'Rol',
+        'actions' => 'Acciones',
+        'update_role' => 'Actualizar rol',
+        'update_capabilities' => 'Actualizar capacidades',
+        'current_admin_account' => 'Cuenta admin actual',
+        'role_self_update_forbidden' => 'No puedes cambiar el rol de la cuenta administradora actual desde esta pantalla.',
+        'capabilities' => [
+            'admin' => [
+                'access' => [
+                    'title' => 'Acceso a administracion',
+                    'description' => 'Permite entrar al area administrativa y visualizar pantallas de gobierno y control de la plataforma.',
+                ],
+                'manage_settings' => [
+                    'title' => 'Gestion de ajustes globales',
+                    'description' => 'Permite actualizar configuraciones globales como salvaguardas del registro y otros valores operativos.',
+                ],
+                'manage_roles' => [
+                    'title' => 'Gestion de asignacion de roles',
+                    'description' => 'Permite asignar, revisar y mantener el rol que posee cada cuenta de usuario.',
+                ],
+            ],
+            'dashboard' => [
+                'access' => [
+                    'title' => 'Acceso al dashboard',
+                    'description' => 'Permite acceder a las pantallas autenticadas del dashboard y al contenido protegido del starter.',
+                ],
+            ],
+            'profile' => [
+                'manage_own' => [
+                    'title' => 'Gestion del propio perfil',
+                    'description' => 'Permite editar datos personales, contrasena, idioma, configuracion 2FA y preferencias de la cuenta.',
+                ],
+            ],
+            'frontend' => [
+                'choose_template' => [
+                    'title' => 'Seleccion de template frontend',
+                    'description' => 'Permite elegir y persistir el template visual preferido para la cuenta actual.',
+                ],
+            ],
         ],
     ],
     'auth' => [
@@ -217,6 +285,8 @@ return [
         'recovery-codes-generated' => 'Se generaron nuevos codigos de recuperacion.',
         'frontend-template-updated' => 'El template del frontend se actualizo correctamente.',
         'human-verification-updated' => 'La verificacion humana del registro se actualizo correctamente.',
+        'user-role-updated' => 'El rol del usuario se actualizo correctamente.',
+        'role-capabilities-updated' => 'Las capacidades del rol se actualizaron correctamente.',
     ],
     'checklist' => [
         'eyebrow' => 'Stack check',

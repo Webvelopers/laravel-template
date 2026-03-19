@@ -11,6 +11,10 @@
         'two-factor-authentication-disabled' => __('frontend.status.two-factor-authentication-disabled'),
         'two-factor-authentication-confirmed' => __('frontend.status.two-factor-authentication-confirmed'),
         'recovery-codes-generated' => __('frontend.status.recovery-codes-generated'),
+        'frontend-template-updated' => __('frontend.status.frontend-template-updated'),
+        'human-verification-updated' => __('frontend.status.human-verification-updated'),
+        'user-role-updated' => __('frontend.status.user-role-updated'),
+        'role-capabilities-updated' => __('frontend.status.role-capabilities-updated'),
     ];
 @endphp
 

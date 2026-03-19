@@ -14,10 +14,9 @@ final readonly class HumanVerificationChallenge
 
     public function image(): string
     {
-        /** @var array{svg: string, answer: string}|null $challenge */
-        $challenge = $this->session->get(self::SESSION_KEY);
+        $challenge = $this->challenge();
 
-        if (! is_array($challenge) || ! isset($challenge['svg'], $challenge['answer'])) {
+        if ($challenge === null) {
             $challenge = $this->generate();
             $this->session->put(self::SESSION_KEY, $challenge);
         }
@@ -27,10 +26,9 @@ final readonly class HumanVerificationChallenge
 
     public function verify(?string $answer): bool
     {
-        /** @var array{svg: string, answer: string}|null $challenge */
-        $challenge = $this->session->get(self::SESSION_KEY);
+        $challenge = $this->challenge();
 
-        if (! is_array($challenge) || ! isset($challenge['answer'])) {
+        if ($challenge === null) {
             return false;
         }
 
@@ -45,6 +43,25 @@ final readonly class HumanVerificationChallenge
     public function clear(): void
     {
         $this->session->forget(self::SESSION_KEY);
+    }
+
+    /**
+     * @return array{svg: string, answer: string}|null
+     */
+    private function challenge(): ?array
+    {
+        $challenge = $this->session->get(self::SESSION_KEY);
+
+        if (! is_array($challenge)
+            || ! is_string($challenge['svg'] ?? null)
+            || ! is_string($challenge['answer'] ?? null)) {
+            return null;
+        }
+
+        return [
+            'svg' => $challenge['svg'],
+            'answer' => $challenge['answer'],
+        ];
     }
 
     /**

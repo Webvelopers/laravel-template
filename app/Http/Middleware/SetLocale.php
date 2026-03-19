@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App\Models\AppSetting;
+use App\Models\UserFrontendPreference;
+use App\Models\UserRoleAssignment;
 use App\Support\HumanVerificationChallenge;
 use Closure;
 use Illuminate\Http\Request;
@@ -18,11 +20,16 @@ final class SetLocale
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $supportedLocales = ['en', 'es'];
-        $supportedTemplates = ['default', 'shadcn'];
-        $locale = $request->session()->get('locale', config('app.locale'));
-        $frontendTemplate = $request->session()->get('frontend_template', 'default');
-        $userTemplate = $request->user()?->frontend_template;
+        /** @var list<string> $supportedLocales */
+        $supportedLocales = config('frontend.locales.supported', []);
+        /** @var list<string> $supportedTemplates */
+        $supportedTemplates = config('frontend.templates.supported', []);
+        $defaultLocale = config('frontend.locales.default', config('app.locale'));
+        $defaultTemplate = config('frontend.templates.default', 'default');
+        $locale = $request->session()->get('locale', $defaultLocale);
+        $frontendTemplate = $request->session()->get('frontend_template', $defaultTemplate);
+        $userTemplate = UserFrontendPreference::templateFor($request->user());
+        $currentUserRole = UserRoleAssignment::roleFor($request->user());
 
         if (is_string($locale) && in_array($locale, $supportedLocales, true)) {
             app()->setLocale($locale);
@@ -34,12 +41,13 @@ final class SetLocale
         }
 
         if (! is_string($frontendTemplate) || ! in_array($frontendTemplate, $supportedTemplates, true)) {
-            $frontendTemplate = 'default';
+            $frontendTemplate = $defaultTemplate;
         }
 
-        $registrationHumanVerificationEnabled = AppSetting::getBool('registration_human_verification_enabled');
+        $registrationHumanVerificationEnabled = AppSetting::registrationHumanVerificationEnabled();
 
         View::share('frontendTemplate', $frontendTemplate);
+        View::share('currentUserRole', $currentUserRole);
         View::share('registrationHumanVerificationEnabled', $registrationHumanVerificationEnabled);
         View::share(
             'humanVerificationImage',

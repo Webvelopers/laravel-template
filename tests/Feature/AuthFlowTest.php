@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Enums\UserRole;
 use App\Models\AppSetting;
 use App\Models\User;
+use App\Models\UserRoleAssignment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -27,12 +29,13 @@ it('registers a user with a normalized email address', function (): void {
     expect($user)
         ->not->toBeNull()
         ->and($user?->name)->toBe('Starter User')
+        ->and(UserRoleAssignment::roleFor($user))->toBe(UserRole::User)
         ->and(Hash::check('T3mplate!Safe#987', (string) $user?->password))->toBeTrue()
         ->and(Auth::check())->toBeTrue();
 });
 
 it('requires human verification on registration when enabled', function (): void {
-    AppSetting::setBool('registration_human_verification_enabled', true);
+    AppSetting::setRegistrationHumanVerificationEnabled(true);
 
     get(route('register'))->assertOk();
 
@@ -49,7 +52,7 @@ it('requires human verification on registration when enabled', function (): void
 });
 
 it('registers a user when human verification succeeds', function (): void {
-    AppSetting::setBool('registration_human_verification_enabled', true);
+    AppSetting::setRegistrationHumanVerificationEnabled(true);
 
     get(route('register'))->assertOk();
 
@@ -69,6 +72,7 @@ it('registers a user when human verification succeeds', function (): void {
 });
 
 it('logs in verified users and redirects them to the dashboard', function (): void {
+    /** @var User $user */
     $user = User::factory()->create([
         'password' => Hash::make('Password123!'),
         'email_verified_at' => now(),
@@ -83,6 +87,7 @@ it('logs in verified users and redirects them to the dashboard', function (): vo
 });
 
 it('logs out authenticated users', function (): void {
+    /** @var User $user */
     $user = User::factory()->create();
 
     actingAs($user);

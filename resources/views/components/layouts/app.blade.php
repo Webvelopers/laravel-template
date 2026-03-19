@@ -56,6 +56,12 @@
                         <a href="{{ route('dashboard') }}" class="{{ $navLinkClass }}">
                             {{ __('frontend.nav.dashboard') }}
                         </a>
+                        @if (($currentUserRole ?? null)?->isAdmin())
+                            <a href="{{ route('admin.settings') }}" class="{{ $navLinkClass }}">
+                                {{ __('frontend.nav.admin') }}
+                            </a>
+                        @endif
+
                         <a href="{{ route('profile') }}" class="{{ $navLinkClass }}">
                             {{ __('frontend.nav.profile') }}
                         </a>

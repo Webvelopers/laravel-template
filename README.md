@@ -1,67 +1,70 @@
 # Laravel 12 Starter Template
 
-This repository is an opinionated **Laravel 12** starter template for new product development.
+Starter profesional para nuevos productos sobre Laravel 12, con autenticacion completa, roles tipados, preferencias de frontend, panel de administracion basico y tooling de calidad listo para trabajar.
 
-It is designed to give you a usable application foundation on day one instead of a bare framework install. The project already includes authentication flows, a starter UI, localization support, quality tooling, and development defaults that are practical for local work and easy to evolve for production.
+## Resumen
 
-## What This Template Includes
+- Laravel 12 + PHP 8.2+
+- Fortify sin Jetstream
+- Livewire 3 + Blade
+- Tailwind CSS 4 + Vite
+- Pest, PHPStan, Pint, Rector y Prettier
+- Localizacion `en` y `es`
+- Roles tipados: `admin` y `user`
+- Preferencias de frontend por usuario
+- Configuracion global tipada para verificacion humana en registro
 
-- Laravel 12 with PHP 8.2+
-- Fortify-based authentication:
-    - login
-    - registration
-    - password reset
-    - email verification
-    - two-factor authentication
-- Livewire 3 with a reusable starter component
-- Tailwind CSS 4 + Vite asset pipeline
-- English and Spanish frontend translations
-- Session-based locale switching from the profile page
-- Pest test suite
-- PHPStan, Pint, and Rector for code quality
-- SQLite-first local setup for fast onboarding
+## Funcionalidades incluidas
 
-## Starter Application Features
+- Landing publica en `/`
+- Dashboard para usuarios autenticados y verificados
+- Perfil de cuenta con:
+    - cambio de idioma
+    - seleccion de template visual
+    - actualizacion de nombre y email
+    - cambio de contrasena
+    - activacion de 2FA
+- Area de administracion en `/admin/settings`
+- Verificacion humana configurable para el registro
+- Galeria de templates y preview de estilos
 
-The template ships with a small but real application surface so you can start building immediately:
+## Arquitectura actual
 
-- `/` public landing page
-- `/dashboard` authenticated and verified user dashboard
-- `/profile` account settings page
-- profile management
-- password updates
-- two-factor setup and recovery codes
-- language switching between English and Spanish
+### Backend
 
-## Project Structure
+- `app/Actions/Fortify` contiene las acciones de registro, perfil y password
+- `app/Enums/UserRole.php` define los roles del sistema
+- `app/Enums/AppSettingKey.php` centraliza claves tipadas de configuracion
+- `app/Http/Controllers` contiene endpoints declarativos y delgados
+- `app/Http/Requests` encapsula validacion HTTP
+- `app/Http/Middleware/EnsureUserHasRole.php` protege rutas por rol
+- `app/Http/Middleware/SetLocale.php` resuelve locale, template y estado compartido de frontend
+- `app/Models/UserFrontendPreference.php` separa preferencias visuales del modelo `User`
+- `app/Models/AppSetting.php` expone una API tipada para settings globales
 
-Important starting points in the codebase:
+### Frontend
 
-- `app/Actions/Fortify` custom Fortify actions for user registration, profile updates, and password handling
-- `app/Http/Middleware/SetLocale.php` locale resolution from session
-- `app/Livewire/StarterChecklist.php` example Livewire component used in the dashboard
-- `app/Models/User.php` email verification and two-factor ready user model
-- `app/Providers/FortifyServiceProvider.php` Fortify views, actions, and rate limits
-- `config/fortify.php` Fortify feature toggles and auth-related defaults
-- `lang/en` English translations
-- `lang/es` Spanish translations
-- `resources/views/welcome.blade.php` landing page
-- `resources/views/dashboard.blade.php` starter dashboard
-- `resources/views/profile.blade.php` account settings page
-- `resources/views/auth` custom auth screens
+- Blade-first, sin SPA innecesaria
+- Layout principal en `resources/views/components/layouts/app.blade.php`
+- Pantallas de auth personalizadas en `resources/views/auth`
+- Dashboard en `resources/views/dashboard.blade.php`
+- Perfil en `resources/views/profile.blade.php`
+- Ajustes de administracion en `resources/views/admin/settings.blade.php`
 
-## Requirements
+### Datos y seeders
 
-Before starting, make sure your machine has:
+- `database/seeders/AdminUserSeeder.php` crea perfiles administrativos
+- `database/seeders/StandardUserSeeder.php` crea perfiles de usuario estandar
+- `database/seeders/DatabaseSeeder.php` compone ambos seeders
 
-- PHP 8.2 or newer
+## Requisitos
+
+- PHP 8.2 o superior
 - Composer
-- Node.js and npm
-- SQLite available in your PHP environment
+- Node.js + npm
+- SQLite habilitado en PHP
 
-## Quick Start
-
-Clone the repository and install everything needed to run the project locally.
+## Instalacion rapida
 
 ```bash
 cp .env.example .env
@@ -72,138 +75,138 @@ php artisan key:generate
 php artisan migrate --seed
 ```
 
-Then start the application:
+Iniciar entorno local:
 
 ```bash
 composer run dev
 ```
 
-This command starts the Laravel development server, queue worker, log watcher, and Vite dev server concurrently.
+## Usuarios seed por defecto
 
-## Default Seeded User
+Credenciales de demo para validacion funcional local:
 
-The template creates a starter user through `database/seeders/DatabaseSeeder.php`.
+### Administradores
 
-- email: `starter@example.com`
-- password: `password`
+- `starter@example.com` / `password`
+- `ops-admin@example.com` / `password`
 
-Use this account to validate the authentication flow after setup.
+### Usuarios estandar
 
-## Frontend Localization
+- `member@example.com` / `password`
+- `analyst@example.com` / `password`
 
-The frontend is prepared for multilingual usage.
+Ademas se generan usuarios fake adicionales con rol `user`.
 
-- English translations live in `lang/en/frontend.php`
-- Spanish translations live in `lang/es/frontend.php`
-- Validation, auth, password reset, and pagination messages are also translated in `lang/es`
-- The active locale is stored in session
-- Users can change the language from the account settings page
+## Roles y acceso
 
-If you want to add another language, copy the translation files from `lang/en` and create a new locale directory.
+El sistema usa un enum tipado para roles:
 
-## Authentication Notes
+- `admin`: acceso a configuracion administrativa global
+- `user`: acceso normal a dashboard y perfil
 
-This template uses **Laravel Fortify** without Jetstream.
+Reglas actuales:
 
-That means the authentication logic is already wired, but the UI remains fully customizable in your own Blade views.
+- solo usuarios autenticados y verificados entran a `/dashboard` y `/profile`
+- solo usuarios con rol `admin` entran a `/admin/settings`
+- solo `admin` puede cambiar la verificacion humana global del registro
 
-Current behavior includes:
+## Configuracion global
 
-- verified users can access the dashboard and profile pages
-- unverified users are redirected to the email verification flow
-- users can enable and confirm two-factor authentication
-- once 2FA is confirmed, recovery codes are shown and the QR block is hidden
+Hoy existe una configuracion de aplicacion persistida:
 
-## Development Commands
+- `registration_human_verification_enabled`
 
-Useful project commands:
+Se consume desde `AppSetting` con acceso tipado y afecta:
+
+- render del captcha en registro
+- validacion del registro
+- pantalla administrativa
+
+## Comandos utiles
+
+### Desarrollo
 
 ```bash
 composer run dev
-composer run test
-composer run fix
-composer run phpstan
-composer run pest
-npm run build
-npm run lint
+php artisan serve
+npm run dev
 ```
 
-### What They Do
-
-- `composer run dev` starts the local development stack
-- `composer run test` runs refactoring checks, linting, static analysis, and tests
-- `composer run fix` runs automated refactoring and formatting tasks
-- `composer run phpstan` runs static analysis
-- `composer run pest` runs the Pest test suite
-- `npm run build` builds production assets
-- `npm run lint` checks frontend formatting rules
-
-## Quality Tooling
-
-This template already includes a baseline quality workflow:
-
-- **Pest** for feature and unit testing
-- **PHPStan** for static analysis
-- **Laravel Pint** for PHP formatting
-- **Rector** for automated refactors and modernization
-- **Prettier** for frontend formatting rules
-
-This makes the repository suitable as a repeatable starter for teams that want guardrails from the beginning.
-
-## Environment Notes
-
-The `.env.example` file is already prepared with useful defaults.
-
-Highlights:
-
-- SQLite is the default database connection
-- timezone is configurable through `APP_TIMEZONE`
-- auth rate limits are configurable through environment variables
-- password reset expiration and throttling are configurable through environment variables
-- session cookie settings are relaxed for local development
-
-## Recommended Customization After Cloning
-
-After using this repository as a project base, update the following first:
-
-1. Application name, URL, timezone, mail configuration, and locale defaults in `.env`
-2. Landing page content in `resources/views/welcome.blade.php`
-3. Dashboard content in `resources/views/dashboard.blade.php`
-4. Profile and account settings experience in `resources/views/profile.blade.php`
-5. Seeders and factories to match your domain
-6. Translation files for your product language requirements
-7. Brand styling, assets, and copywriting
-
-## Testing and Verification
-
-Before using the template for a real project, verify the baseline locally:
+### Base de datos
 
 ```bash
-php artisan test
-./vendor/bin/phpstan analyse --memory-limit=256M
+php artisan migrate
+composer run migrate
+php artisan db:seed
+php artisan db:seed --class=AdminUserSeeder
+php artisan db:seed --class=StandardUserSeeder
+```
+
+### Calidad
+
+```bash
 ./vendor/bin/pint --test
+npm run lint
+composer run phpstan
+./vendor/bin/pest
+composer run test
+```
+
+## Testing
+
+El proyecto incluye cobertura para:
+
+- auth flow
+- pages auth
+- dashboard y profile
+- acceso admin
+- seeders
+- locale
+- galeria de templates
+- 2FA
+- modelo `User`
+
+Ejemplos:
+
+```bash
+./vendor/bin/pest tests/Feature/AdminAccessTest.php
+./vendor/bin/pest tests/Feature/DatabaseSeederTest.php
+./vendor/bin/pest --filter="global human verification"
+```
+
+## Convenciones del proyecto
+
+- `User` queda cercano al baseline de Laravel y solo contiene logica de identidad/autorizacion esencial
+- las preferencias visuales no viven en `User`, sino en `UserFrontendPreference`
+- las validaciones HTTP viven en `FormRequest`
+- los roles usan enum, no strings dispersos por el codigo
+- los settings globales usan claves tipadas, no magic strings sueltos
+- los lockfiles se versionan
+
+## Estructura recomendada para extender
+
+Si vas a seguir creciendo este starter, el orden sugerido es:
+
+1. adaptar branding y copy de landing/dashboard
+2. definir tus entidades de dominio
+3. ampliar permisos sobre la base de roles existente
+4. mover settings globales a modulos mas especificos si el dominio crece
+5. agregar CI para lint, analisis y tests
+
+## Verificacion recomendada antes de entregar cambios
+
+```bash
+./vendor/bin/pint --test
+npm run lint
+composer run phpstan
+./vendor/bin/pest
 npm run build
 ```
 
-These checks should pass before you begin feature work.
+## Changelog
 
-## Template Conventions
+Consulta `CHANGELOG.md` para el historial funcional del starter.
 
-- `database/database.sqlite` is intended for local development and should not be committed
-- lockfiles are intentionally tracked for reproducible installs
-- the frontend favors Blade + Livewire for a simple starter architecture
-- auth views are owned by the application, not hidden behind external scaffolding
+## Licencia
 
-## Suggested Next Steps
-
-Once you create a new project from this template, a good first sequence is:
-
-1. Rename the app and update the environment configuration
-2. Replace the starter landing page with your product messaging
-3. Model your first domain entities and migrations
-4. Update seeders for your own roles, users, and fixtures
-5. Add CI workflows for tests, static analysis, and formatting
-
-## License
-
-This project follows the Laravel ecosystem defaults unless you define a different license for your own derived project.
+MIT, siguiendo la base del ecosistema Laravel, salvo que tu proyecto derivado defina otra.

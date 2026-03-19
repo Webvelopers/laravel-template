@@ -3,9 +3,7 @@
 ])
 
 @if ($messages)
-    <ul
-        {{ $attributes->merge(['class' => ($frontendTemplate ?? 'default') === 'shadcn' ? 'space-y-1 text-sm text-rose-600' : 'space-y-1 text-sm text-rose-600']) }}
-    >
+    <ul {{ $attributes->merge(['class' => 'space-y-1 text-sm text-rose-600']) }}>
         @foreach ((array) $messages as $message)
             <li>{{ $message }}</li>
         @endforeach

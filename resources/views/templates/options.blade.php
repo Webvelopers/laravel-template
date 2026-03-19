@@ -1,8 +1,5 @@
-@props([
-    'activeTemplate' => null,
-])
-
 @php
+    $activeTemplate ??= null;
     $isShadcn = ($frontendTemplate ?? 'default') === 'shadcn';
 
     if ($isShadcn) {

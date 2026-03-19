@@ -2,6 +2,6 @@
     <section class="space-y-10">
         @include($frontendTemplate === 'shadcn' ? 'templates.shadcn' : 'templates.default')
 
-        <x-templates.options :active-template="$frontendTemplate" />
+        @include('templates.options', ['activeTemplate' => $frontendTemplate])
     </section>
 </x-layouts.app>

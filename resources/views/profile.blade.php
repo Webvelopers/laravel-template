@@ -1,5 +1,8 @@
 @php
     $isShadcn = ($frontendTemplate ?? 'default') === 'shadcn';
+    $supportedLocales = config('frontend.locales.supported', []);
+    $supportedTemplates = config('frontend.templates.supported', []);
+    $defaultTemplate = config('frontend.templates.default', 'default');
     $pageTitleClass = $isShadcn ? 'text-4xl font-semibold tracking-tight text-slate-950' : 'font-display text-4xl text-stone-950';
     $eyebrowClass = $isShadcn ? 'text-xs font-medium tracking-[0.28em] text-slate-500 uppercase' : 'text-sm font-semibold tracking-[0.35em] text-amber-700 uppercase';
     $bodyCopyClass = $isShadcn ? 'max-w-2xl text-base leading-8 text-slate-600' : 'max-w-2xl text-base leading-8 text-stone-600';
@@ -27,6 +30,8 @@
 <x-layouts.app :title="__('frontend.profile.title')">
     @php
         $user = auth()->user();
+        $role = $currentUserRole ?? \App\Enums\UserRole::User;
+        $roleBadgeClass = $isShadcn ? 'inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium tracking-[0.2em] text-slate-600 uppercase' : 'inline-flex rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold tracking-[0.24em] text-amber-700 uppercase';
         $twoFactorEnabled = $user->two_factor_secret !== null;
         $twoFactorConfirmed = $user->two_factor_confirmed_at !== null;
     @endphp
@@ -38,6 +43,9 @@
             </p>
             <h1 class="{{ $pageTitleClass }}">{{ __('frontend.profile.headline') }}</h1>
             <p class="{{ $bodyCopyClass }}">{{ __('frontend.profile.description') }}</p>
+            <p class="{{ $roleBadgeClass }}">
+                {{ __('frontend.roles.label') }}: {{ __('frontend.roles.' . $role->value) }}
+            </p>
         </div>
 
         <x-status-banner :status="session('status')" />
@@ -57,12 +65,11 @@
                     <label class="{{ $fieldLabelClass }}">
                         <span>{{ __('frontend.profile.language') }}</span>
                         <select name="locale" class="{{ $inputClass }}">
-                            <option value="en" @selected(app()->getLocale() === 'en')>
-                                {{ __('frontend.profile.languages.en') }}
-                            </option>
-                            <option value="es" @selected(app()->getLocale() === 'es')>
-                                {{ __('frontend.profile.languages.es') }}
-                            </option>
+                            @foreach ($supportedLocales as $locale)
+                                <option value="{{ $locale }}" @selected(app()->getLocale() === $locale)>
+                                    {{ __('frontend.profile.languages.' . $locale) }}
+                                </option>
+                            @endforeach
                         </select>
                     </label>
 
@@ -81,12 +88,14 @@
                     <label class="{{ $fieldLabelClass }}">
                         <span>{{ __('frontend.profile.template') }}</span>
                         <select name="frontend_template" class="{{ $inputClass }}">
-                            <option value="default" @selected(($frontendTemplate ?? 'default') === 'default')>
-                                {{ __('frontend.profile.templates.default') }}
-                            </option>
-                            <option value="shadcn" @selected(($frontendTemplate ?? 'default') === 'shadcn')>
-                                {{ __('frontend.profile.templates.shadcn') }}
-                            </option>
+                            @foreach ($supportedTemplates as $template)
+                                <option
+                                    value="{{ $template }}"
+                                    @selected(($frontendTemplate ?? $defaultTemplate) === $template)
+                                >
+                                    {{ __('frontend.profile.templates.' . $template) }}
+                                </option>
+                            @endforeach
                         </select>
                     </label>
 
@@ -101,39 +110,21 @@
                     </button>
                 </form>
 
-                <form
-                    method="POST"
-                    action="{{ route('human-verification.update') }}"
-                    class="{{ $subtleCardClass }} mt-6 space-y-3"
-                >
-                    @csrf
+                @if ($role->isAdmin())
+                    <div class="{{ $subtleCardClass }} mt-6 space-y-3">
+                        <p class="{{ $fieldLabelClass }}">{{ __('frontend.profile.admin_tools') }}</p>
+                        <p
+                            class="{{ $isShadcn ? 'text-sm leading-7 text-slate-500' : 'text-sm leading-7 text-stone-500' }}"
+                        >
+                            {{ __('frontend.profile.admin_tools_description') }}
+                        </p>
+                        <a href="{{ route('admin.settings') }}" class="{{ $secondaryButtonClass }} inline-flex">
+                            {{ __('frontend.profile.open_admin_settings') }}
+                        </a>
+                    </div>
+                @endif
 
-                    <label class="{{ $fieldLabelClass }}">
-                        <span>{{ __('frontend.profile.human_verification') }}</span>
-                        <select name="registration_human_verification_enabled" class="{{ $inputClass }}">
-                            <option value="0" @selected(! $registrationHumanVerificationEnabled)>
-                                {{ __('frontend.profile.human_verification_options.disabled') }}
-                            </option>
-                            <option value="1" @selected($registrationHumanVerificationEnabled)>
-                                {{ __('frontend.profile.human_verification_options.enabled') }}
-                            </option>
-                        </select>
-                    </label>
-
-                    <p
-                        class="{{ $isShadcn ? 'text-sm leading-7 text-slate-500' : 'text-sm leading-7 text-stone-500' }}"
-                    >
-                        {{ __('frontend.profile.human_verification_description') }}
-                    </p>
-
-                    <x-input-error :messages="$errors->get('registration_human_verification_enabled')" />
-
-                    <button type="submit" class="{{ $secondaryButtonClass }}">
-                        {{ __('frontend.profile.update_human_verification') }}
-                    </button>
-                </form>
-
-                <form method="POST" action="/user/profile-information" class="mt-6 space-y-4">
+                <form method="POST" action="{{ route('user-profile-information.update') }}" class="mt-6 space-y-4">
                     @csrf
                     @method('PUT')
 
@@ -195,7 +186,7 @@
                 <h2 class="{{ $sectionTitleClass }}">{{ __('frontend.profile.security_title') }}</h2>
                 <p class="{{ $sectionDescriptionClass }}">{{ __('frontend.profile.security_description') }}</p>
 
-                <form method="POST" action="/user/password" class="mt-6 space-y-4">
+                <form method="POST" action="{{ route('user-password.update') }}" class="mt-6 space-y-4">
                     @csrf
                     @method('PUT')
 
@@ -231,7 +222,7 @@
                         </div>
 
                         @if ($twoFactorEnabled)
-                            <form method="POST" action="/user/two-factor-authentication">
+                            <form method="POST" action="{{ route('two-factor.disable') }}">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="{{ $dangerButtonClass }}">
@@ -239,7 +230,7 @@
                                 </button>
                             </form>
                         @else
-                            <form method="POST" action="/user/two-factor-authentication">
+                            <form method="POST" action="{{ route('two-factor.enable') }}">
                                 @csrf
                                 <button type="submit" class="{{ $twoFactorEnableButtonClass }}">
                                     {{ __('frontend.profile.enable') }}
@@ -258,7 +249,7 @@
                     @endif
 
                     @if ($twoFactorEnabled && ! $twoFactorConfirmed)
-                        <form method="POST" action="/user/confirmed-two-factor-authentication" class="space-y-3">
+                        <form method="POST" action="{{ route('two-factor.confirm') }}" class="space-y-3">
                             @csrf
                             <label class="{{ $fieldLabelClass }}">
                                 <span>{{ __('frontend.profile.confirmation_code') }}</span>
@@ -290,7 +281,11 @@
                                 @endforeach
                             </div>
 
-                            <form method="POST" action="/user/two-factor-recovery-codes" class="mt-4">
+                            <form
+                                method="POST"
+                                action="{{ route('two-factor.regenerate-recovery-codes') }}"
+                                class="mt-4"
+                            >
                                 @csrf
                                 <button type="submit" class="{{ $recoveryActionClass }}">
                                     {{ __('frontend.profile.regenerate_codes') }}

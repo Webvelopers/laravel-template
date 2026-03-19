@@ -1,5 +1,3 @@
-import './bootstrap'
-
 const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
 
 const refreshButton = document.querySelector('[data-human-verification-refresh]')

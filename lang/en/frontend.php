@@ -10,6 +10,7 @@ return [
         'home' => 'Home',
         'templates' => 'Templates',
         'dashboard' => 'Dashboard',
+        'admin' => 'Admin',
         'profile' => 'Profile',
         'logout' => 'Log out',
         'login' => 'Log in',
@@ -89,8 +90,14 @@ return [
         'eyebrow' => 'Dashboard',
         'greeting' => 'Hello, :name.',
         'description' => 'You already have a working starting point: authentication, email verification, profile, 2FA and a quality stack ready to extend your application domain.',
+        'admin_settings' => 'Admin settings',
         'manage_profile' => 'Manage profile',
         'docs' => 'Explore docs',
+    ],
+    'roles' => [
+        'label' => 'Profile',
+        'admin' => 'Administration',
+        'user' => 'User',
     ],
     'profile' => [
         'title' => 'Profile',
@@ -111,6 +118,9 @@ return [
         'human_verification' => 'Human verification on registration',
         'human_verification_description' => 'Enable a built-in human verification challenge on the create account page. When enabled, new registrations must solve a small prompt before the account is created.',
         'update_human_verification' => 'Update verification setting',
+        'admin_tools' => 'Administration tools',
+        'admin_tools_description' => 'As an administrator you can manage global registration and platform options from the administration area.',
+        'open_admin_settings' => 'Open admin settings',
         'human_verification_options' => [
             'disabled' => 'Disabled',
             'enabled' => 'Enabled',
@@ -138,6 +148,64 @@ return [
         'templates' => [
             'default' => 'Default starter',
             'shadcn' => 'Shadcn-inspired',
+        ],
+    ],
+    'admin' => [
+        'title' => 'Administration',
+        'eyebrow' => 'Administration',
+        'headline' => 'Platform settings',
+        'description' => 'Manage global settings that affect the registration flow and operational defaults for the application.',
+        'human_verification_title' => 'Registration safeguards',
+        'human_verification_description' => 'Control whether new users must solve the built-in human verification challenge before their account is created.',
+        'human_verification_field' => 'Human verification on registration',
+        'save_settings' => 'Save settings',
+        'roles_title' => 'Role catalog and enabled capabilities',
+        'roles_description' => 'Review the roles currently available in the platform and the operational capabilities attached to each one.',
+        'capabilities_title' => 'Available capabilities',
+        'protected_capability' => 'Protected capability required for this role.',
+        'user_roles_title' => 'User role administration',
+        'user_roles_description' => 'Assign the role that defines how each account can operate inside the platform. This section is restricted to administrators.',
+        'user_name' => 'Name',
+        'user_email' => 'Email',
+        'user_role' => 'Role',
+        'actions' => 'Actions',
+        'update_role' => 'Update role',
+        'update_capabilities' => 'Update capabilities',
+        'current_admin_account' => 'Current admin account',
+        'role_self_update_forbidden' => 'You cannot change the role of the current administrator account from this screen.',
+        'capabilities' => [
+            'admin' => [
+                'access' => [
+                    'title' => 'Administration access',
+                    'description' => 'Allows entry to the administration area and visibility over governance screens for the platform.',
+                ],
+                'manage_settings' => [
+                    'title' => 'Global settings management',
+                    'description' => 'Allows updating platform-wide settings such as registration safeguards and other operational defaults.',
+                ],
+                'manage_roles' => [
+                    'title' => 'Role assignment management',
+                    'description' => 'Allows assigning, reviewing, and maintaining which role each user account holds.',
+                ],
+            ],
+            'dashboard' => [
+                'access' => [
+                    'title' => 'Dashboard access',
+                    'description' => 'Allows the role to access authenticated dashboard screens and protected starter content.',
+                ],
+            ],
+            'profile' => [
+                'manage_own' => [
+                    'title' => 'Own profile management',
+                    'description' => 'Allows editing personal profile data, password, locale, two-factor setup, and account preferences.',
+                ],
+            ],
+            'frontend' => [
+                'choose_template' => [
+                    'title' => 'Frontend template selection',
+                    'description' => 'Allows choosing and persisting the preferred frontend visual template for the current account.',
+                ],
+            ],
         ],
     ],
     'auth' => [
@@ -217,6 +285,8 @@ return [
         'recovery-codes-generated' => 'New recovery codes were generated.',
         'frontend-template-updated' => 'Frontend template updated successfully.',
         'human-verification-updated' => 'Registration human verification updated successfully.',
+        'user-role-updated' => 'User role updated successfully.',
+        'role-capabilities-updated' => 'Role capabilities updated successfully.',
     ],
     'checklist' => [
         'eyebrow' => 'Stack check',

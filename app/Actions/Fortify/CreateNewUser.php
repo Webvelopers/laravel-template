@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Actions\Fortify;
 
+use App\Enums\UserRole;
 use App\Models\AppSetting;
 use App\Models\User;
+use App\Models\UserRoleAssignment;
 use App\Support\HumanVerificationChallenge;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -28,7 +30,7 @@ final readonly class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input): User
     {
-        $humanVerificationEnabled = AppSetting::getBool('registration_human_verification_enabled');
+        $humanVerificationEnabled = AppSetting::registrationHumanVerificationEnabled();
 
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
@@ -53,10 +55,14 @@ final readonly class CreateNewUser implements CreatesNewUsers
 
         $this->humanVerificationChallenge->clear();
 
-        return User::create([
+        $user = User::create([
             'name' => $input['name'],
             'email' => mb_strtolower($input['email']),
             'password' => Hash::make($input['password']),
         ]);
+
+        UserRoleAssignment::assign($user, UserRole::User);
+
+        return $user;
     }
 }

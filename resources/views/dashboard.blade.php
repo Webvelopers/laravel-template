@@ -16,6 +16,10 @@
         $primaryButtonClass = 'rounded-full bg-stone-900 px-5 py-3 text-sm font-semibold text-amber-50 transition hover:bg-stone-700';
         $secondaryButtonClass = 'rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-stone-900';
     }
+
+    $user = auth()->user();
+    $role = $currentUserRole ?? \App\Enums\UserRole::User;
+    $roleBadgeClass = $isShadcn ? 'mt-4 inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium tracking-[0.2em] text-slate-600 uppercase' : 'mt-4 inline-flex rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold tracking-[0.24em] text-amber-700 uppercase';
 @endphp
 
 <x-layouts.app :title="__('frontend.dashboard.eyebrow')">
@@ -25,14 +29,23 @@
                 {{ __('frontend.dashboard.eyebrow') }}
             </p>
             <h1 class="{{ $titleClass }}">
-                {{ __('frontend.dashboard.greeting', ['name' => auth()->user()->name]) }}
+                {{ __('frontend.dashboard.greeting', ['name' => $user->name]) }}
             </h1>
             <p class="{{ $copyClass }}">{{ __('frontend.dashboard.description') }}</p>
+            <p class="{{ $roleBadgeClass }}">
+                {{ __('frontend.roles.label') }}: {{ __('frontend.roles.' . $role->value) }}
+            </p>
 
             <div class="mt-6 flex flex-wrap gap-3">
                 <a href="{{ route('profile') }}" class="{{ $primaryButtonClass }}">
                     {{ __('frontend.dashboard.manage_profile') }}
                 </a>
+                @if ($role->isAdmin())
+                    <a href="{{ route('admin.settings') }}" class="{{ $secondaryButtonClass }}">
+                        {{ __('frontend.dashboard.admin_settings') }}
+                    </a>
+                @endif
+
                 <a
                     href="https://laravel.com/docs/12.x"
                     target="_blank"
