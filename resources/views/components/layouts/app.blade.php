@@ -2,6 +2,9 @@
     $template = ($frontendTemplate ?? 'default') === 'shadcn' ? 'shadcn' : 'default';
     $templateCss = "resources/css/templates/{$template}.css";
     $resolvedBodyClass = trim('template-' . $template . ' ' . ($bodyClass ?? ''));
+    $viteEntries = ['resources/css/app.css', $templateCss, 'resources/js/app.js'];
+    $builtVite = clone app(\Illuminate\Foundation\Vite::class);
+    $builtVite->useHotFile(storage_path('framework/vite.build.disabled'));
 @endphp
 
 <!DOCTYPE html>
@@ -18,7 +21,11 @@
             rel="stylesheet"
         />
         @stack('head')
-        @vite(['resources/css/app.css', $templateCss, 'resources/js/app.js'])
+        @production
+            @vite($viteEntries)
+        @else
+            {!! $builtVite($viteEntries) !!}
+        @endproduction
         @livewireStyles
     </head>
     <body class="{{ $resolvedBodyClass }}">
