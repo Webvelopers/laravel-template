@@ -285,10 +285,11 @@ return [
         'weak' => 'Weak',
         'medium' => 'Medium',
         'strong' => 'Strong',
-        'length' => 'At least 8 characters',
+        'length' => 'At least :minimum_length characters',
         'mixed_case' => 'Uppercase and lowercase letters',
         'number' => 'At least one number',
         'symbol' => 'At least one symbol',
+        'uncompromised' => 'Not found in known data leaks',
     ],
     'status' => [
         'profile-information-updated' => 'Profile updated successfully.',

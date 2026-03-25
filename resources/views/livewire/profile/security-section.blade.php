@@ -1,5 +1,6 @@
 @php
     $isShadcn = ($frontendTemplate ?? 'default') === 'shadcn';
+    $minimumLength = $this->minimumLength();
     $sectionCardClass = $isShadcn ? 'rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-[0_20px_60px_-36px_rgba(15,23,42,0.25)]' : 'rounded-[2rem] border border-stone-200 bg-white/90 p-6 shadow-[0_24px_80px_-40px_rgba(120,53,15,0.45)]';
     $subtlePanelClass = $isShadcn ? 'mt-8 space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-5' : 'mt-8 space-y-4 rounded-2xl border border-stone-200 bg-stone-50 p-5';
     $fieldLabelClass = $isShadcn ? 'block space-y-2 text-sm font-medium text-slate-700' : 'block space-y-2 text-sm font-medium text-stone-700';
@@ -79,7 +80,8 @@
             <div class="grid gap-2 text-sm md:grid-cols-2">
                 @foreach ($passwordStrength['checks'] as $check => $passed)
                     <p class="{{ $passed ? 'text-emerald-700' : ($isShadcn ? 'text-slate-500' : 'text-stone-500') }}">
-                        {{ $passed ? 'OK' : '...' }} {{ __('frontend.password_strength.' . $check) }}
+                        {{ $passed ? 'OK' : '...' }}
+                        {{ $check === 'length' ? __('frontend.password_strength.' . $check, ['minimum_length' => $minimumLength]) : __('frontend.password_strength.' . $check) }}
                     </p>
                 @endforeach
             </div>

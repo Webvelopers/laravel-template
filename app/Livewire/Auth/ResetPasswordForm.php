@@ -7,7 +7,6 @@ namespace App\Livewire\Auth;
 use App\Livewire\Concerns\HandlesControllerRequests;
 use App\Livewire\Concerns\InteractsWithPasswordStrength;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Http\Controllers\NewPasswordController;
 use Livewire\Component;
@@ -62,7 +61,7 @@ final class ResetPasswordForm extends Component
     {
         $this->validateOnly($property, [
             'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string', Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
+            'password' => $this->passwordRules(),
             'passwordConfirmation' => ['required', 'same:password'],
         ], [], [
             'passwordConfirmation' => 'password_confirmation',

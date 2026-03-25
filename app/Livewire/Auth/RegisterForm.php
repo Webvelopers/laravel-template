@@ -10,7 +10,6 @@ use App\Models\AppSetting;
 use App\Support\HumanVerificationChallenge;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Auth\StatefulGuard;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Livewire\Component;
@@ -95,7 +94,7 @@ final class RegisterForm extends Component
         $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
-            'password' => ['required', 'string', Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
+            'password' => $this->passwordRules(),
             'passwordConfirmation' => ['required', 'same:password'],
         ];
 

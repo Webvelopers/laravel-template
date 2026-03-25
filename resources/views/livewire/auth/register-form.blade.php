@@ -1,4 +1,5 @@
 @php
+    $minimumLength = $this->minimumLength() ?? 8;
     $strengthWrapClass = 'surface-card';
     $strengthTrackClass = 'h-2 rounded-full bg-stone-200';
     $strengthFillClass = match (true) {
@@ -58,7 +59,8 @@
         <div class="grid gap-2 text-sm md:grid-cols-2">
             @foreach ($passwordStrength['checks'] as $check => $passed)
                 <p class="{{ $passed ? 'text-emerald-700' : $strengthMutedClass }}">
-                    {{ $passed ? 'OK' : '...' }} {{ __('frontend.password_strength.' . $check) }}
+                    {{ $passed ? 'OK' : '...' }}
+                    {{ $check === 'length' ? __('frontend.password_strength.' . $check, ['minimum_length' => $minimumLength]) : __('frontend.password_strength.' . $check) }}
                 </p>
             @endforeach
         </div>

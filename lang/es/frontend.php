@@ -285,10 +285,11 @@ return [
         'weak' => 'Debil',
         'medium' => 'Media',
         'strong' => 'Fuerte',
-        'length' => 'Al menos 8 caracteres',
+        'length' => 'Al menos :minimum_length caracteres',
         'mixed_case' => 'Letras mayusculas y minusculas',
         'number' => 'Al menos un numero',
         'symbol' => 'Al menos un simbolo',
+        'uncompromised' => 'No encontrada en filtraciones conocidas',
     ],
     'status' => [
         'profile-information-updated' => 'Perfil actualizado correctamente.',

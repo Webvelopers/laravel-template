@@ -7,7 +7,6 @@ namespace App\Livewire\Profile;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Livewire\Concerns\InteractsWithPasswordStrength;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Actions\ConfirmTwoFactorAuthentication;
 use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
@@ -131,7 +130,7 @@ final class SecuritySection extends Component
     {
         $this->validateOnly($property, [
             'currentPassword' => ['required', 'string'],
-            'password' => ['required', 'string', Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
+            'password' => $this->passwordRules(),
             'passwordConfirmation' => ['required', 'same:password'],
             'code' => ['nullable', 'string'],
         ], [], [

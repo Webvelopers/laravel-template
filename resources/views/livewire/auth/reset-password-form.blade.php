@@ -1,5 +1,6 @@
 @php
     $isShadcn = ($frontendTemplate ?? 'default') === 'shadcn';
+    $minimumLength = $this->minimumLength();
     $strengthWrapClass = $isShadcn ? 'rounded-xl border border-slate-200 bg-slate-50 p-4' : 'rounded-2xl border border-stone-200 bg-stone-50 p-4';
     $strengthTrackClass = $isShadcn ? 'h-2 rounded-full bg-slate-200' : 'h-2 rounded-full bg-stone-200';
     $strengthFillClass = match (true) {
@@ -46,7 +47,8 @@
         <div class="grid gap-2 text-sm md:grid-cols-2">
             @foreach ($passwordStrength['checks'] as $check => $passed)
                 <p class="{{ $passed ? 'text-emerald-700' : ($isShadcn ? 'text-slate-500' : 'text-stone-500') }}">
-                    {{ $passed ? 'OK' : '...' }} {{ __('frontend.password_strength.' . $check) }}
+                    {{ $passed ? 'OK' : '...' }}
+                    {{ $check === 'length' ? __('frontend.password_strength.' . $check, ['minimum_length' => $minimumLength]) : __('frontend.password_strength.' . $check) }}
                 </p>
             @endforeach
         </div>
